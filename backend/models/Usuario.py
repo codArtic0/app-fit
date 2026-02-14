@@ -1,18 +1,18 @@
-class Usuario:
-    def __init__(self, nome: str, sexo: str, idade: int, peso: float, altura: float, nivel: int):
-        self.nome = nome
-        self.sexo = sexo.lower()
-        self.idade = idade
-        self.peso = peso
-        self.altura = altura
-        self.nivel = nivel
+from sqlmodel import SQLModel, Field
+from typing import Optional
 
-        self.validar_dados()
+class Usuario(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
 
-        self.calcular_imc()
-        self.calcular_tmb()
-        self.aplicar_nivel_atividade()
-        self.calcular_macros()
+    nome: str
+    sexo: str
+    altura: float
+    idade: int
+    peso: float
+    nivel: int
+    imc: float
+    tmb: float
+
 
     def validar_dados(self):
         if self.sexo not in ["m", "f"]:

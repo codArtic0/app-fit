@@ -1,18 +1,10 @@
 from backend.models.Usuario import Usuario
 
-def cadastrar_usuario(pessoa: dict):
-    try:
-        nova_pessoa = Usuario(
-            nome=pessoa["nome"],
-            sexo=pessoa["sexo"],
-            idade=pessoa["idade"],
-            peso=pessoa["peso"],
-            altura=pessoa["altura"],
-            imc=pessoa["imc"],
-            tmb=pessoa["tmb"]
-        )
+from sqlmodel import Session, select
 
-        return nova_pessoa.to_dict()
+def get_usuarios_db(session: Session):
+    statement = select(Usuario)
+    return session.exec(statement).all()
 
-    except KeyError as e:
-        raise ValueError(f"Campo obrigatório ausente: {e}")
+def get_usuario_por_id(id_usuario: int, session: Session):
+    return session.get(Usuario, id_usuario)

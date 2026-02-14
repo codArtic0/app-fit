@@ -1,6 +1,4 @@
 from models.Usuario import Usuario
-from fastapi import HTTPException
-
 
 def cadastrar_usuario(pessoa: dict):
     try:
@@ -13,8 +11,8 @@ def cadastrar_usuario(pessoa: dict):
             imc=pessoa["imc"],
             tmb=pessoa["tmb"]
         )
-        return {"message": "Usuário cadastrado com sucesso!", "dados": nova_pessoa.to_dict()}
+
+        return nova_pessoa.to_dict()
+
     except KeyError as e:
-        raise HTTPException(status_code=400, detail=f"Campo obrigatório ausente: {e}")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise ValueError(f"Campo obrigatório ausente: {e}")

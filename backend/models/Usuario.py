@@ -1,43 +1,60 @@
-class Pessoa:
-    def __init__(self, nome, sexo, idade, peso, altura,nivel):
+class Usuario:
+    def __init__(self, nome: str, sexo: str, idade: int, peso: float, altura: float, nivel: int):
         self.nome = nome
-        self.sexo = sexo
+        self.sexo = sexo.lower()
         self.idade = idade
         self.peso = peso
         self.altura = altura
         self.nivel = nivel
+
+        self.validar_dados()
+
         self.calcular_imc()
         self.calcular_tmb()
-        self.calcular_nivel_atividade(nivel)
+        self.aplicar_nivel_atividade()
         self.calcular_macros()
+
+    def validar_dados(self):
+        if self.sexo not in ["m", "f"]:
+            raise ValueError("Sexo deve ser 'm' ou 'f'")
+
+        if not (0 <= self.nivel <= 4):
+            raise ValueError("Nível de atividade deve ser entre 0 e 4")
+
+        if self.peso <= 0 or self.altura <= 0 or self.idade <= 0:
+            raise ValueError("Peso, altura e idade devem ser maiores que zero")
 
 
     def calcular_imc(self):
-        self.imc = self.peso / (self.altura ** 2)
-    
+        self.imc = round(self.peso / (self.altura ** 2), 2)
+
     def calcular_tmb(self):
         if self.sexo == 'masculino':
             self.tmb = 88.36 + (13.4 * self.peso) + (4.8 * self.altura * 100) - (5.7 * self.idade)
         else:
             self.tmb = 447.6 + (9.2 * self.peso) + (3.1 * self.altura * 100) - (4.3 * self.idade)
-    
-    def calcular_macros(self):
-            proteinas = self.peso * 2.2
-            gorduras = self.peso * 1.0
-            carboidratos = (self.tmb - (proteinas * 4) - (gorduras * 9)) / 4
-            self.macros = (proteinas, gorduras, carboidratos)
 
-    def calcular_nivel_atividade(self, nivel):
-        if nivel == '0':
-            self.tmb *= 1.2
-        elif nivel == '1':
-            self.tmb *= 1.375
-        elif nivel == '2':
-            self.tmb *= 1.55
-        elif nivel == '3':
-            self.tmb *= 1.725
-        elif nivel == '4':
-            self.tmb *= 1.9
+    def aplicar_nivel_atividade(self):
+        fatores = {
+            0: 1.2,
+            1: 1.375,
+            2: 1.55,
+            3: 1.725,
+            4: 1.9
+        }
+        self.tmb *= fatores[self.nivel]
+        self.tmb = round(self.tmb, 2)
+
+    def calcular_macros(self):
+        proteinas = round(self.peso * 2.2, 2)
+        gorduras = round(self.peso * 1.0, 2)
+        carboidratos = round((self.tmb - (proteinas * 4) - (gorduras * 9)) / 4, 2)
+
+        self.macros = {
+            "proteinas": proteinas,
+            "gorduras": gorduras,
+            "carboidratos": carboidratos
+        }
 
     def to_dict(self):
         return {
@@ -46,6 +63,8 @@ class Pessoa:
             "idade": self.idade,
             "peso": self.peso,
             "altura": self.altura,
+            "nivel": self.nivel,
             "imc": self.imc,
-            "tmb": self.tmb
+            "tmb": self.tmb,
+            "macros": self.macros
         }

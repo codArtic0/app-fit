@@ -38,3 +38,14 @@ class Pessoa:
             self.tmb *= 1.725
         elif nivel == '4':
             self.tmb *= 1.9
+
+    def to_dict(self):
+        return {
+            "nome": self.nome,
+            "sexo": self.sexo,
+            "idade": self.idade,
+            "peso": self.peso,
+            "altura": self.altura,
+            "imc": self.imc,
+            "tmb": self.tmb
+        }

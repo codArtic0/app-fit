@@ -1,4 +1,4 @@
-from models.Usuario import Usuario
+from backend.models.Usuario import Usuario
 
 def cadastrar_usuario(pessoa: dict):
     try:

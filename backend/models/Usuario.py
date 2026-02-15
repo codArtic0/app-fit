@@ -1,28 +1,34 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
-class Usuario(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+from sqlmodel import SQLModel, Field
+from typing import Optional
 
+class UsuarioCreate(SQLModel):
     nome: str
     sexo: str
     altura: float
     idade: int
     peso: float
     nivel: int
-    imc: float
-    tmb: float
+
+class Usuario(UsuarioCreate, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    imc: float = 0.0
+    tmb: float = 0.0
 
 
     def validar_dados(self):
+        erros = {}
         if self.sexo not in ["m", "f"]:
-            raise ValueError("Sexo deve ser 'm' ou 'f'")
-
+            erros["sexo"] = "Sexo deve ser 'm' ou 'f'"
         if not (0 <= self.nivel <= 4):
-            raise ValueError("Nível de atividade deve ser entre 0 e 4")
-
-        if self.peso <= 0 or self.altura <= 0 or self.idade <= 0:
-            raise ValueError("Peso, altura e idade devem ser maiores que zero")
+            erros["nivel"] = "Nível deve ser entre 0 e 4"
+        if self.peso <= 0:
+            erros["peso"] = "Peso deve ser maior que zero"
+        
+        if erros:
+            raise ValueError(erros)
 
 
     def calcular_imc(self):

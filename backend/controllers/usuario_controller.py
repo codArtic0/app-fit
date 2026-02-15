@@ -19,6 +19,7 @@ def get_usuario_por_id(id_usuario: int, session: Session):
     return session.get(Usuario, id_usuario)
 
 def criar_usuario_db(usuario: Usuario, session: Session):
+    usuario.validar_dados()
     usuario.imc = calcular_imc(usuario.peso, usuario.altura)
     usuario.tmb = calcular_tmb(usuario.peso, usuario.altura, usuario.idade,usuario.sexo)
     session.add(usuario)

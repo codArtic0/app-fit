@@ -3,7 +3,7 @@ from sqlmodel import Session
 from typing import List
 from backend.database.db import get_session
 from backend.controllers import usuario_controller
-from backend.models.Usuario import Usuario
+from backend.models.Usuario import Usuario, UsuarioCreate
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -20,6 +20,12 @@ def detalhar_usuario(usuario_id: int, session: Session = Depends(get_session)):
     return usuario
 
 @router.post("/usuario", response_model=Usuario)
-def criar_usuario(usuario: Usuario, session: Session = Depends(get_session)):
-    novo_usuario = usuario_controller.criar_usuario_db(usuario, session)
-    return novo_usuario
+def criar_usuario(usuario: UsuarioCreate, session: Session = Depends(get_session)):
+    try:
+        novo_usuario = Usuario.model_validate(usuario)
+        return usuario_controller.criar_usuario_db(novo_usuario, session)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={"erros_validacao": e.args[0]}
+        )

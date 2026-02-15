@@ -18,3 +18,8 @@ def detalhar_usuario(usuario_id: int, session: Session = Depends(get_session)):
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     return usuario
+
+@router.post("/usuario", response_model=Usuario)
+def criar_usuario(usuario: Usuario, session: Session = Depends(get_session)):
+    novo_usuario = usuario_controller.criar_usuario_db(usuario, session)
+    return novo_usuario
